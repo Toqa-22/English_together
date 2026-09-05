@@ -13,6 +13,28 @@
   }
   test = activeTest;
 
+  // One attempt allowed by default, plus one more per retake an admin has
+  // granted — checked here for a friendly message; the real enforcement
+  // (which can't be bypassed) happens server-side in submit_test_attempt().
+  const [{ data: pastAttempts }, { data: grants }] = await Promise.all([
+    supabase.from("test_attempts").select("total_score, total_possible, percentage, completed_at").eq("test_id", test.id).eq("student_id", profile.id).not("completed_at", "is", null),
+    supabase.from("test_retake_grants").select("id").eq("test_id", test.id).eq("student_id", profile.id)
+  ]);
+  const completedCount = (pastAttempts || []).length;
+  const allowedAttempts = 1 + (grants || []).length;
+  if (completedCount >= allowedAttempts) {
+    const last = (pastAttempts || []).sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at))[0];
+    content.innerHTML = `
+      <div class="result-wrap">
+        <div class="result-emoji">✅</div>
+        <p style="font-weight:800; font-size:18px; margin:10px 0 4px;">You've already completed this test.</p>
+        ${last ? `<p style="color:#8892a8; font-size:14px;">Your score: ${last.total_score}/${last.total_possible} (${Math.round(last.percentage)}%)</p>` : ""}
+        <p style="color:#8892a8; font-size:13px; margin-top:8px;">Ask your admin if you need another attempt.</p>
+        <div class="result-actions"><button class="btn btn-primary" onclick="location.href='dashboard.html'">🏠 Dashboard</button></div>
+      </div>`;
+    return;
+  }
+
   const [{ data: rQ }, { data: lQ }, { data: vItems }, { data: words }] = await Promise.all([
     supabase.from("test_reading_questions_public").select("*").eq("test_id", test.id).order("order_number"),
     supabase.from("test_listening_questions_public").select("*").eq("test_id", test.id).order("order_number"),
