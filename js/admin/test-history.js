@@ -65,26 +65,50 @@
     const marksBody = Utils.$("#marks-body");
     Utils.$("#marks-test-title").textContent = title;
     panel.style.display = "block";
-    marksBody.innerHTML = `<tr><td colspan="4"><div class="loading-state"><div class="spinner"></div></div></td></tr>`;
+    marksBody.innerHTML = `<tr><td colspan="5"><div class="loading-state"><div class="spinner"></div></div></td></tr>`;
     panel.scrollIntoView({ behavior: "smooth" });
 
-    const { data, error } = await supabase
-      .from("test_attempts")
-      .select("*, profiles(full_name, username)")
-      .eq("test_id", testId)
-      .not("completed_at", "is", null)
-      .order("completed_at", { ascending: false });
-    if (error) { marksBody.innerHTML = `<tr><td colspan="4">Couldn't load marks: ${error.message}</td></tr>`; return; }
-    if (!data.length) { marksBody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><div class="empty-icon">📊</div><p>No completed attempts yet.</p></div></td></tr>`; return; }
+    const [{ data, error }, { data: grants }] = await Promise.all([
+      supabase.from("test_attempts").select("*, profiles(full_name, username)").eq("test_id", testId).not("completed_at", "is", null).order("completed_at", { ascending: false }),
+      supabase.from("test_retake_grants").select("student_id").eq("test_id", testId)
+    ]);
+    if (error) { marksBody.innerHTML = `<tr><td colspan="5">Couldn't load marks: ${error.message}</td></tr>`; return; }
+    if (!data.length) { marksBody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📊</div><p>No completed attempts yet.</p></div></td></tr>`; return; }
 
-    marksBody.innerHTML = data.map(a => `
+    const grantCounts = {};
+    (grants || []).forEach(g => { grantCounts[g.student_id] = (grantCounts[g.student_id] || 0) + 1; });
+
+    // One attempt is allowed per student per test by default — only show a
+    // retake count if this row's student has actually used up their attempt(s).
+    const attemptsByStudent = {};
+    data.forEach(a => { attemptsByStudent[a.student_id] = (attemptsByStudent[a.student_id] || 0) + 1; });
+
+    marksBody.innerHTML = data.map(a => {
+      const extra = grantCounts[a.student_id] || 0;
+      return `
       <tr>
         <td>${Utils.escapeHtml(a.profiles?.full_name || "-")} <span style="color:#b9c0d6; font-size:12px;">@${Utils.escapeHtml(a.profiles?.username || "")}</span></td>
         <td>⭐ ${a.total_score}/${a.total_possible}</td>
         <td>${Math.round(a.percentage)}%</td>
         <td>${Utils.formatDate(a.completed_at)}</td>
-      </tr>
-    `).join("");
+        <td>
+          ${extra ? `<span class="badge-pill pill-success" style="margin-right:6px;">+${extra} retake${extra > 1 ? "s" : ""} allowed</span>` : ""}
+          <button class="btn btn-secondary" style="padding:6px 10px; font-size:12px;" data-act="allow-retake" data-student="${a.student_id}" data-name="${Utils.escapeHtml(a.profiles?.full_name || "this student")}">Allow Retake</button>
+        </td>
+      </tr>`;
+    }).join("");
+
+    Utils.$all('[data-act="allow-retake"]', marksBody).forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm(`Allow ${btn.dataset.name} to take this test one more time?`)) return;
+        const { error: grantError } = await supabase.from("test_retake_grants").insert({
+          test_id: testId, student_id: btn.dataset.student, granted_by: profile.id
+        });
+        if (grantError) { Utils.toast("Couldn't grant retake: " + grantError.message, "error"); return; }
+        Utils.toast("Retake allowed.", "success");
+        loadMarks(testId, title);
+      });
+    });
   }
 
   Utils.$("#filter-group").addEventListener("change", applyFilters);
