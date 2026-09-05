@@ -51,13 +51,52 @@
           <td>${attempts.length}</td>
           <td>${avg === null ? "-" : avg + "%"}</td>
           <td>${Utils.formatDate(t.created_at)}</td>
-          <td><button class="btn btn-secondary" style="padding:6px 10px; font-size:12px;" data-act="marks" data-id="${t.id}" data-title="${Utils.escapeHtml(t.title)}">View Marks</button></td>
+          <td style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" style="padding:6px 10px; font-size:12px;" data-act="marks" data-id="${t.id}" data-title="${Utils.escapeHtml(t.title)}">View Marks</button>
+            <button class="btn btn-secondary" style="padding:6px 10px; font-size:12px; color:var(--a-danger); border-color:var(--a-danger);" data-act="delete" data-id="${t.id}" data-title="${Utils.escapeHtml(t.title)}" data-attempts="${attempts.length}">Delete</button>
+          </td>
         </tr>`;
     }).join("");
 
     Utils.$all('[data-act="marks"]', tbody).forEach(btn => {
       btn.addEventListener("click", () => loadMarks(btn.dataset.id, btn.dataset.title));
     });
+    Utils.$all('[data-act="delete"]', tbody).forEach(btn => {
+      btn.addEventListener("click", () => deleteTest(btn.dataset.id, btn.dataset.title, parseInt(btn.dataset.attempts, 10)));
+    });
+  }
+
+  // A hard, permanent delete — different from Archive, which deliberately
+  // keeps a test and every mark on it forever. This actually removes the
+  // test row (cascading to its questions/vocab items/attempts/answers/retake
+  // grants via foreign keys) and the uploaded images, with no way back.
+  async function deleteTest(testId, title, attemptCount) {
+    const warning = attemptCount > 0
+      ? `Permanently delete "${title}"? This will also erase ${attemptCount} student mark(s) recorded on it — forever, with no way to recover them. Archiving is the reversible option; this is not. Type-confirm by clicking OK only if you're certain.`
+      : `Permanently delete "${title}"? This cannot be undone.`;
+    if (!confirm(warning)) return;
+    if (attemptCount > 0 && !confirm(`Last check — ${attemptCount} student mark(s) will be gone permanently. Continue?`)) return;
+
+    try {
+      const { data: items } = await supabase.from("test_vocabulary_items").select("image_url").eq("test_id", testId);
+      const paths = (items || [])
+        .map(i => i.image_url)
+        .filter(Boolean)
+        .map(url => {
+          const marker = "/test-images/";
+          const idx = url.indexOf(marker);
+          return idx === -1 ? null : url.slice(idx + marker.length);
+        })
+        .filter(Boolean);
+      if (paths.length) await supabase.storage.from("test-images").remove(paths);
+    } catch (err) {
+      console.error("Image cleanup failed (continuing to delete anyway):", err);
+    }
+
+    const { error } = await supabase.from("tests").delete().eq("id", testId);
+    if (error) { Utils.toast("Couldn't delete: " + error.message, "error"); return; }
+    Utils.toast("Test deleted permanently.", "success");
+    load();
   }
 
   async function loadMarks(testId, title) {
