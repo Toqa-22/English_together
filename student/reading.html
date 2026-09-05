@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reading — English Together</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/student.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sound.js"></script>
+<script src="../js/student/shared.js"></script>
+<script src="../js/student/vocab-card.js"></script>
+</head>
+<body>
+  <header class="student-header" style="border-radius:0 0 20px 20px; padding-bottom:16px;">
+    <div class="header-top">
+      <button class="icon-btn" onclick="location.href='dashboard.html'" title="Back">←</button>
+      <div></div>
+    </div>
+  </header>
+
+  <div class="reading-wrap">
+    <div class="reading-steps">
+      <div class="reading-step active" id="step-read">① Read</div>
+      <div class="reading-step" id="step-answer">② Answer</div>
+      <div class="reading-step" id="step-score">③ Score</div>
+    </div>
+
+    <div id="content-area">
+      <div class="loading-state"><div class="spinner"></div><p>Loading story...</p></div>
+    </div>
+  </div>
+
+<script src="../js/student/reading.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics — Admin</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+</head>
+<body class="admin">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="brand">📚 English Together</div>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="students.html">👨‍🎓 Students</a>
+    <a href="groups.html">👥 Groups</a>
+    <a href="stories.html">📚 Stories</a>
+    <a href="listening.html">🎧 Listening</a>
+    <a href="vocabulary.html">📖 Vocabulary</a>
+    <a href="tests.html">📝 Tests</a>
+    <a href="test-history.html">🗂️ Test History</a>
+    <a href="import.html">📥 Import</a>
+    <a href="assignments.html">🎯 Assignments</a>
+    <a href="challenges.html">🎯 Challenges</a>
+    <a href="badges.html">🏆 Badges</a>
+    <a href="leaderboard.html">🥇 Leaderboard</a>
+    <a href="notifications.html">🔔 Notifications</a>
+    <a href="analytics.html" class="active">📈 Analytics</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="#" class="logout-link" id="logout-link">🚪 Log Out</a>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="hamburger" id="hamburger">☰</button>
+        <h1>Analytics</h1>
+      </div>
+    </div>
+
+    <div id="overview-grid" class="overview-grid">
+      <div class="loading-state"><div class="spinner"></div></div>
+    </div>
+
+    <div class="analytics-grid" style="margin-top:8px;">
+      <div class="card">
+        <p style="font-weight:700; margin:0 0 12px;">Average Score by Group</p>
+        <div id="chart-group-scores" class="bar-chart"></div>
+      </div>
+      <div class="card">
+        <p style="font-weight:700; margin:0 0 12px;">Skill Breakdown (all students)</p>
+        <div id="chart-skills" class="bar-chart"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <p style="font-weight:700; margin:0 0 12px;">Points Earned by Group</p>
+      <div id="chart-points" class="bar-chart"></div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+        <p style="font-weight:700; margin:0;">📚 Vocabulary — Group Analytics</p>
+        <select id="vocab-group-select" style="padding:8px 12px; border-radius:8px; border:2px solid #e5e8f5; font-size:13px;"></select>
+      </div>
+      <div id="vocab-analytics-area">
+        <div class="loading-state"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </main>
+
+<script src="../js/admin/analytics.js"></script>
+</body>
+</html>

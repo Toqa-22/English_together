@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notifications — Admin</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+</head>
+<body class="admin">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="brand">📚 English Together</div>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="students.html">👨‍🎓 Students</a>
+    <a href="groups.html">👥 Groups</a>
+    <a href="stories.html">📚 Stories</a>
+    <a href="listening.html">🎧 Listening</a>
+    <a href="vocabulary.html">📖 Vocabulary</a>
+    <a href="tests.html">📝 Tests</a>
+    <a href="test-history.html">🗂️ Test History</a>
+    <a href="import.html">📥 Import</a>
+    <a href="assignments.html">🎯 Assignments</a>
+    <a href="challenges.html">🎯 Challenges</a>
+    <a href="badges.html">🏆 Badges</a>
+    <a href="leaderboard.html">🥇 Leaderboard</a>
+    <a href="notifications.html" class="active">🔔 Notifications</a>
+    <a href="analytics.html">📈 Analytics</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="#" class="logout-link" id="logout-link">🚪 Log Out</a>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="hamburger" id="hamburger">☰</button>
+        <h1>Notifications</h1>
+      </div>
+    </div>
+
+    <div class="card" style="max-width:640px; margin-bottom:24px;">
+      <div class="admin-field" style="margin-bottom:12px;"><label>Title</label><input type="text" id="f-title" required></div>
+      <div class="admin-field" style="margin-bottom:12px;"><label>Message</label><textarea id="f-message" required></textarea></div>
+      <div class="admin-field" style="margin-bottom:12px;">
+        <label>Type</label>
+        <select id="f-type">
+          <option value="announcement">Announcement</option>
+          <option value="new_story">New Story</option>
+          <option value="challenge">Challenge</option>
+          <option value="reminder">Reminder</option>
+        </select>
+      </div>
+      <div class="admin-field" style="margin-bottom:12px;">
+        <label>Send To</label>
+        <select id="f-target">
+          <option value="all">All Students</option>
+          <option value="group">Specific Group</option>
+          <option value="student">Specific Student</option>
+        </select>
+      </div>
+      <div class="admin-field" id="group-field" style="display:none; margin-bottom:12px;">
+        <label>Group</label>
+        <select id="f-group"></select>
+      </div>
+      <div class="admin-field" id="student-field" style="display:none; margin-bottom:12px;">
+        <label>Student</label>
+        <select id="f-student"></select>
+      </div>
+      <button class="btn btn-primary" id="btn-send">Send Notification</button>
+      <p id="send-status" style="font-size:12px; color:#8892a8; margin-top:8px;"></p>
+    </div>
+
+    <h2 class="section-title" style="font-size:16px;">Sent Notifications</h2>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Title</th><th>Type</th><th>Audience</th><th>Sent</th></tr></thead>
+        <tbody id="notif-body"><tr><td colspan="4"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+<script src="../js/admin/notifications.js"></script>
+</body>
+</html>

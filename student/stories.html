@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Stories — English Together</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/student.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sound.js"></script>
+<script src="../js/student/shared.js"></script>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="dashboard.html" class="top-nav-brand">📚 English Together</a>
+      <div class="top-nav-links">
+        <a href="dashboard.html">🏠 Home</a>
+        <a href="stories.html" class="active">📚 Stories</a>
+        <a href="vocabulary.html">📖 Vocabulary</a>
+        <a href="listening.html">🎧 Listening</a>
+        <a href="progress.html">📊 Progress</a>
+        <a href="minigames.html">🎮 Games</a>
+        <a href="leaderboard.html">🥇 Leaderboard</a>
+        <a href="achievements.html">🏆 Badges</a>
+        <a href="profile.html">👤 Profile</a>
+      </div>
+    </div>
+  </nav>
+  <header class="student-header" style="border-radius:0 0 20px 20px; padding-bottom:24px;">
+    <div class="header-top">
+      <div><h1 style="font-size:19px;">📚 Choose Your Adventure</h1></div>
+      <button class="icon-btn" onclick="location.href='dashboard.html'" title="Home">🏠</button>
+    </div>
+  </header>
+
+  <section class="section" style="margin-top:20px;">
+    <div id="story-grid" class="story-grid">
+      <div class="loading-state"><div class="spinner"></div><p>Loading your stories...</p></div>
+    </div>
+  </section>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html"><span class="nav-icon">🏠</span>Home</a>
+    <a href="stories.html" class="active"><span class="nav-icon">📚</span>Stories</a>
+    <a href="progress.html"><span class="nav-icon">📊</span>Progress</a>
+    <a href="minigames.html"><span class="nav-icon">🎮</span>Games</a>
+    <a href="vocabulary.html"><span class="nav-icon">📖</span>Words</a>
+    <a href="achievements.html"><span class="nav-icon">🏆</span>Badges</a>
+    <a href="profile.html"><span class="nav-icon">👤</span>Profile</a>
+  </nav>
+
+<script src="../js/student/stories.js"></script>
+</body>
+</html>

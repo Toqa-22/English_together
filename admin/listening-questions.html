@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listening Questions — Admin</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<style>
+  .q-editor-card { margin-bottom: 14px; }
+  .q-editor-row { display: flex; gap: 10px; align-items: flex-start; }
+  .q-editor-row .reorder-col { display: flex; flex-direction: column; gap: 2px; }
+  .q-editor-row .reorder-col button { background: #F0F1F8; border: none; border-radius: 6px; width: 28px; height: 24px; font-size: 12px; }
+  .q-field label { font-size: 12px; font-weight: 700; color: #8892a8; display: block; margin-bottom: 4px; }
+  .q-field input, .q-field select { width: 100%; padding: 8px 10px; border-radius: 8px; border: 2px solid #e5e8f5; font-size: 14px; }
+  .q-opts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .correct-marker { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 8px; }
+
+  @media (max-width: 560px) {
+    .q-editor-row { flex-direction: column; }
+    .q-editor-row .reorder-col { flex-direction: row; order: 2; align-self: flex-end; }
+    .q-opts-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body class="admin">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="brand">📚 English Together</div>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="students.html">👨‍🎓 Students</a>
+    <a href="groups.html">👥 Groups</a>
+    <a href="stories.html">📚 Stories</a>
+    <a href="listening.html" class="active">🎧 Listening</a>
+    <a href="vocabulary.html">📖 Vocabulary</a>
+    <a href="tests.html">📝 Tests</a>
+    <a href="test-history.html">🗂️ Test History</a>
+    <a href="import.html">📥 Import</a>
+    <a href="assignments.html">🎯 Assignments</a>
+    <a href="challenges.html">🎯 Challenges</a>
+    <a href="badges.html">🏆 Badges</a>
+    <a href="leaderboard.html">🥇 Leaderboard</a>
+    <a href="notifications.html">🔔 Notifications</a>
+    <a href="analytics.html">📈 Analytics</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="#" class="logout-link" id="logout-link">🚪 Log Out</a>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="hamburger" id="hamburger">☰</button>
+        <h1 id="page-title">Listening Questions</h1>
+      </div>
+      <button class="btn btn-secondary" onclick="location.href='listening.html'">← Back to Listening</button>
+    </div>
+
+    <div id="questions-list" style="max-width:760px;">
+      <div class="loading-state"><div class="spinner"></div></div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-add-question" style="margin-top:8px;">+ Add Question</button>
+  </main>
+
+<script src="../js/admin/listening-questions.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listening Editor — Admin</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<style>
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 760px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .field label { font-size: 13px; font-weight: 700; display: block; margin-bottom: 6px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 10px 12px; border-radius: 10px; border: 2px solid #e5e8f5; font-size: 14px; font-family: inherit;
+  }
+  .field textarea { min-height: 90px; resize: vertical; }
+  .video-preview-wrap { position: relative; width: 100%; max-width: 400px; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: #eef0fa; margin-top: 8px; }
+  .video-preview-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-preview-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: #b9c0d6; font-size: 13px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab-btn { background: #fff; border: 2px solid #e5e8f5; border-radius: 10px; padding: 8px 16px; font-weight: 700; font-size: 13px; color: #8892a8; }
+  .tab-btn.active { border-color: var(--a-primary); color: var(--a-primary); background: #F0EFFB; }
+
+  @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body class="admin">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="brand">📚 English Together</div>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="students.html">👨‍🎓 Students</a>
+    <a href="groups.html">👥 Groups</a>
+    <a href="stories.html">📚 Stories</a>
+    <a href="listening.html" class="active">🎧 Listening</a>
+    <a href="vocabulary.html">📖 Vocabulary</a>
+    <a href="tests.html">📝 Tests</a>
+    <a href="test-history.html">🗂️ Test History</a>
+    <a href="import.html">📥 Import</a>
+    <a href="assignments.html">🎯 Assignments</a>
+    <a href="challenges.html">🎯 Challenges</a>
+    <a href="badges.html">🏆 Badges</a>
+    <a href="leaderboard.html">🥇 Leaderboard</a>
+    <a href="notifications.html">🔔 Notifications</a>
+    <a href="analytics.html">📈 Analytics</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="#" class="logout-link" id="logout-link">🚪 Log Out</a>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="hamburger" id="hamburger">☰</button>
+        <h1 id="page-title">Add Listening</h1>
+      </div>
+      <button class="btn btn-secondary" onclick="location.href='listening.html'">← Back to Listening</button>
+    </div>
+
+    <form id="listening-form" class="card" style="max-width:800px;">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Title</label>
+          <input type="text" id="f-title" required>
+        </div>
+        <div class="field full">
+          <label>Description</label>
+          <input type="text" id="f-description" placeholder="One line summary">
+        </div>
+        <div class="field full">
+          <label>Audio Source</label>
+          <div class="tabs" style="margin-bottom:10px;">
+            <button type="button" class="tab-btn active" data-listening-type="youtube">🎥 YouTube Video</button>
+            <button type="button" class="tab-btn" data-listening-type="audio">🎤 Upload Audio</button>
+          </div>
+          <div id="listening-youtube-block">
+            <label>YouTube Video ID <span style="color:#8892a8; font-weight:400;">(the 11-character ID, e.g. dQw4w9WgXcQ — not the full URL)</span></label>
+            <input type="text" id="f-video-id" maxlength="11" pattern="[A-Za-z0-9_-]{11}" placeholder="dQw4w9WgXcQ">
+            <div class="video-preview-wrap" id="preview-wrap">
+              <div class="video-preview-empty">Enter a valid video ID to preview</div>
+            </div>
+          </div>
+          <div id="listening-audio-block" style="display:none;">
+            <label>Audio File</label>
+            <input type="file" id="f-audio-file" accept="audio/*">
+            <audio id="audio-preview" controls style="width:100%; margin-top:10px; display:none;"></audio>
+            <p id="audio-status" style="font-size:12px; color:#8892a8; margin:8px 0 0;"></p>
+          </div>
+        </div>
+        <div class="field">
+          <label>Difficulty</label>
+          <select id="f-difficulty">
+            <option value="very_easy">Very Easy</option>
+            <option value="easy">Easy</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Estimated Minutes</label>
+          <input type="number" id="f-minutes" min="1" value="5">
+        </div>
+        <div class="field full">
+          <label>Groups <span style="color:#8892a8; font-weight:400;">(who this is assigned to)</span></label>
+          <div id="group-checkboxes" style="display:flex; flex-direction:column; gap:6px; padding:10px 12px; border:2px solid #e5e8f5; border-radius:10px;"></div>
+        </div>
+        <div class="field full">
+          <label>Thumbnail URL <span style="color:#8892a8; font-weight:400;">(optional — defaults to the YouTube thumbnail)</span></label>
+          <input type="url" id="f-thumbnail" placeholder="https://...">
+        </div>
+        <div class="field full">
+          <label><input type="checkbox" id="f-active" checked style="width:auto; margin-right:6px;"> Active (visible when assigned)</label>
+        </div>
+      </div>
+
+      <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+        <button type="submit" class="btn btn-primary" id="save-btn">Save Listening Activity</button>
+        <span id="save-status" style="align-self:center; font-size:13px; color:#8892a8;"></span>
+      </div>
+    </form>
+  </main>
+
+<script src="../js/admin/listening-editor.js"></script>
+</body>
+</html>

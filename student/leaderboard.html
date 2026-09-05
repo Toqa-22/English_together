@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaderboard — English Together</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/student.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="dashboard.html" class="top-nav-brand">📚 English Together</a>
+      <div class="top-nav-links">
+        <a href="dashboard.html">🏠 Home</a>
+        <a href="stories.html">📚 Stories</a>
+        <a href="vocabulary.html">📖 Vocabulary</a>
+        <a href="listening.html">🎧 Listening</a>
+        <a href="progress.html">📊 Progress</a>
+        <a href="minigames.html">🎮 Games</a>
+        <a href="leaderboard.html" class="active">🥇 Leaderboard</a>
+        <a href="achievements.html">🏆 Badges</a>
+        <a href="profile.html">👤 Profile</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>🥇 Global Leaderboard</h1>
+    <button class="icon-btn" style="background:#eef0fa; color:var(--s-primary);" onclick="location.href='dashboard.html'">🏠</button>
+  </div>
+
+  <section class="section">
+    <div id="my-rank-card" class="card rank-widget" style="margin-bottom:20px; display:none;">
+      <div class="rw-info">
+        <div><div class="rw-num" id="my-rank-num">-</div><div class="rw-label">Your Rank</div></div>
+        <div><div class="rw-num" id="my-rank-points">-</div><div class="rw-label">Points</div></div>
+      </div>
+    </div>
+
+    <div id="leaderboard-list">
+      <div class="loading-state"><div class="spinner"></div><p>Loading rankings...</p></div>
+    </div>
+
+    <div style="display:flex; justify-content:center; margin-top:16px;">
+      <button class="btn btn-secondary" id="btn-load-more" style="display:none;">Load More</button>
+    </div>
+  </section>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html"><span class="nav-icon">🏠</span>Home</a>
+    <a href="stories.html"><span class="nav-icon">📚</span>Stories</a>
+    <a href="progress.html"><span class="nav-icon">📊</span>Progress</a>
+    <a href="minigames.html"><span class="nav-icon">🎮</span>Games</a>
+    <a href="vocabulary.html"><span class="nav-icon">📖</span>Words</a>
+    <a href="achievements.html"><span class="nav-icon">🏆</span>Badges</a>
+    <a href="profile.html"><span class="nav-icon">👤</span>Profile</a>
+  </nav>
+
+<script src="../js/student/leaderboard.js"></script>
+</body>
+</html>

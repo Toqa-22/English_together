@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English Together</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<style>
+  body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 16px; }
+  .login-card { width: 100%; max-width: 380px; text-align: center; }
+  .login-logo { font-size: 48px; margin-bottom: 4px; }
+  .login-title { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
+  .login-sub { color: #6b7690; margin: 0 0 24px; font-size: 14px; }
+  .field { text-align: left; margin-bottom: 14px; }
+  .field label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px; }
+  .field input {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 2px solid #e5e8f5;
+    font-size: 15px; outline: none; transition: border-color .15s ease;
+  }
+  .field input:focus { border-color: var(--s-primary); }
+  .login-error { color: var(--s-error); font-size: 13px; min-height: 18px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+  <div class="card login-card anim-fade-slide-up">
+    <div class="login-logo">📚</div>
+    <h1 class="login-title">English Together</h1>
+    <p class="login-sub">Sign in to continue your journey</p>
+    <form id="login-form">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" required autocomplete="username" autocapitalize="off" autocorrect="off">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" required autocomplete="current-password">
+      </div>
+      <div class="login-error" id="login-error"></div>
+      <button type="submit" class="btn btn-primary btn-large" style="width:100%" id="login-btn">Sign In</button>
+    </form>
+  </div>
+
+<script>
+(async () => {
+  // If already logged in, bounce straight to the right dashboard.
+  const profile = await Auth.getProfile();
+  if (profile) window.location.href = profile.role === "admin" ? "admin/dashboard.html" : "student/dashboard.html";
+})();
+
+Utils.$("#login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = Utils.$("#login-btn");
+  const errorEl = Utils.$("#login-error");
+  errorEl.textContent = "";
+  btn.disabled = true;
+  btn.textContent = "Signing in...";
+  try {
+    const username = Utils.$("#username").value.trim();
+    const password = Utils.$("#password").value;
+    const profile = await Auth.login(username, password);
+    window.location.href = profile.role === "admin" ? "admin/dashboard.html" : "student/dashboard.html";
+  } catch (err) {
+    errorEl.textContent = err.message || "Invalid username or password.";
+    btn.disabled = false;
+    btn.textContent = "Sign In";
+  }
+});
+</script>
+</body>
+</html>

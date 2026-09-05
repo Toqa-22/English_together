@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini Games — English Together</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/student.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sound.js"></script>
+<script src="../js/animations.js"></script>
+<script src="../js/student/shared.js"></script>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a href="dashboard.html" class="top-nav-brand">📚 English Together</a>
+      <div class="top-nav-links">
+        <a href="dashboard.html">🏠 Home</a>
+        <a href="stories.html">📚 Stories</a>
+        <a href="vocabulary.html">📖 Vocabulary</a>
+        <a href="listening.html">🎧 Listening</a>
+        <a href="progress.html">📊 Progress</a>
+        <a href="minigames.html" class="active">🎮 Games</a>
+        <a href="leaderboard.html">🥇 Leaderboard</a>
+        <a href="achievements.html">🏆 Badges</a>
+        <a href="profile.html">👤 Profile</a>
+      </div>
+    </div>
+  </nav>
+  <div class="page-header">
+    <h1>🎮 Mini Games</h1>
+    <button class="icon-btn" style="background:#eef0fa; color:var(--s-primary);" onclick="location.href='dashboard.html'">🏠</button>
+  </div>
+
+  <section class="section">
+    <select id="story-select" class="game-select" style="width:100%; max-width:360px;"></select>
+
+    <div class="game-tabs" id="game-tabs">
+      <button class="tab-btn active" data-game="wordmatch">🔤 Word Match</button>
+      <button class="tab-btn" data-game="storyorder">📖 Story Order</button>
+      <button class="tab-btn" data-game="findword">🔍 Find the Word</button>
+      <button class="tab-btn" data-game="truefalse">✓ True or False</button>
+      <button class="tab-btn" data-game="picture">🖼️ Choose the Picture</button>
+      <button class="tab-btn" data-game="vocabquiz">📚 Vocabulary Quiz</button>
+    </div>
+
+    <div class="card" id="game-area" style="min-height:200px;">
+      <div class="loading-state"><div class="spinner"></div></div>
+    </div>
+  </section>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html"><span class="nav-icon">🏠</span>Home</a>
+    <a href="stories.html"><span class="nav-icon">📚</span>Stories</a>
+    <a href="progress.html"><span class="nav-icon">📊</span>Progress</a>
+    <a href="minigames.html" class="active"><span class="nav-icon">🎮</span>Games</a>
+    <a href="vocabulary.html"><span class="nav-icon">📖</span>Words</a>
+    <a href="achievements.html"><span class="nav-icon">🏆</span>Badges</a>
+    <a href="profile.html"><span class="nav-icon">👤</span>Profile</a>
+  </nav>
+
+<script src="../js/student/minigames.js"></script>
+</body>
+</html>

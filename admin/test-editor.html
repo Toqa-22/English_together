@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Editor — Admin</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<style>
+  .field label { font-size: 13px; font-weight: 700; display: block; margin-bottom: 6px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 10px 12px; border-radius: 10px; border: 2px solid #e5e8f5; font-size: 14px; font-family: inherit;
+  }
+  .field textarea { min-height: 120px; resize: vertical; }
+  .section-block { margin-top: 28px; }
+  .section-block h2 { font-size: 16px; margin: 0 0 4px; }
+  .section-block .hint { font-size: 12px; color: #8892a8; margin: 0 0 14px; }
+  .video-preview-wrap { position: relative; width: 100%; max-width: 400px; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: #eef0fa; margin-top: 8px; }
+  .video-preview-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-preview-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: #b9c0d6; font-size: 13px; }
+  .vocab-item-card { display: flex; gap: 14px; align-items: center; background: #fff; border-radius: 12px; box-shadow: var(--shadow); padding: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+  .vocab-item-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; background: #eef0fa; flex-shrink: 0; }
+  .vocab-item-card .vi-fields { flex: 1; min-width: 160px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .vocab-item-card .vi-fields input { padding: 8px 10px; border-radius: 8px; border: 2px solid #e5e8f5; font-size: 13px; }
+  @media (max-width: 640px) { .video-preview-wrap { max-width: 100%; } }
+
+  .q-editor-row { display: flex; gap: 10px; align-items: flex-start; }
+  .q-editor-row .reorder-col { display: flex; flex-direction: column; gap: 2px; }
+  .q-editor-row .reorder-col button { background: #F0F1F8; border: none; border-radius: 6px; width: 28px; height: 24px; font-size: 12px; }
+  .q-field label { font-size: 12px; font-weight: 700; color: #8892a8; display: block; margin-bottom: 4px; }
+  .q-field input, .q-field select { width: 100%; padding: 8px 10px; border-radius: 8px; border: 2px solid #e5e8f5; font-size: 14px; }
+  .q-opts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .correct-marker { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 8px; }
+  @media (max-width: 560px) {
+    .q-editor-row { flex-direction: column; }
+    .q-editor-row .reorder-col { flex-direction: row; order: 2; align-self: flex-end; }
+    .q-opts-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body class="admin">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="brand">📚 English Together</div>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="students.html">👨‍🎓 Students</a>
+    <a href="groups.html">👥 Groups</a>
+    <a href="stories.html">📚 Stories</a>
+    <a href="listening.html">🎧 Listening</a>
+    <a href="vocabulary.html">📖 Vocabulary</a>
+    <a href="tests.html" class="active">📝 Tests</a>
+    <a href="test-history.html">🗂️ Test History</a>
+    <a href="import.html">📥 Import</a>
+    <a href="assignments.html">🎯 Assignments</a>
+    <a href="challenges.html">🎯 Challenges</a>
+    <a href="badges.html">🏆 Badges</a>
+    <a href="leaderboard.html">🥇 Leaderboard</a>
+    <a href="notifications.html">🔔 Notifications</a>
+    <a href="analytics.html">📈 Analytics</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="#" class="logout-link" id="logout-link">🚪 Log Out</a>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="hamburger" id="hamburger">☰</button>
+        <h1 id="page-title">Create Test</h1>
+      </div>
+      <button class="btn btn-secondary" onclick="location.href='tests.html'">← Back to Tests</button>
+    </div>
+
+    <form id="test-form" class="card" style="max-width:820px;">
+      <div class="field" style="margin-bottom:14px;">
+        <label>Group</label>
+        <select id="f-group" disabled></select>
+        <p style="font-size:12px; color:#8892a8; margin:6px 0 0;">One test per group — this can't be changed after creation. Archive this test and start a new one if you need a different group.</p>
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Title</label>
+        <input type="text" id="f-title" required>
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Description <span style="color:#8892a8; font-weight:400;">(optional)</span></label>
+        <input type="text" id="f-description">
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <button type="submit" class="btn btn-primary" id="save-btn">Save Test Info</button>
+        <span id="save-status" style="align-self:center; font-size:13px; color:#8892a8;"></span>
+      </div>
+    </form>
+
+    <div id="sections-area" style="display:none;">
+      <!-- Reading -->
+      <div class="section-block card" style="max-width:820px;">
+        <h2>📖 Reading</h2>
+        <p class="hint">Text shown above the questions.</p>
+        <div class="field" style="margin-bottom:14px;">
+          <textarea id="f-reading-text" placeholder="Story text students will read..."></textarea>
+        </div>
+        <div class="field" style="margin-bottom:14px; max-width:220px;">
+          <label>Time Limit <span style="color:#8892a8; font-weight:400;">(minutes, optional)</span></label>
+          <input type="number" id="f-reading-timer" min="1" placeholder="No limit">
+        </div>
+        <button type="button" class="btn btn-secondary" style="padding:8px 14px; font-size:13px; margin-bottom:14px;" id="btn-save-reading-text">Save Reading Text</button>
+        <div id="reading-questions-list"></div>
+        <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:13px;" id="btn-add-reading-q">+ Add Reading Question</button>
+      </div>
+
+      <!-- Listening -->
+      <div class="section-block card" style="max-width:820px;">
+        <h2>🎧 Listening</h2>
+        <p class="hint">Shown above the questions — pick either a YouTube video or an uploaded audio file.</p>
+        <div class="tabs" style="margin-bottom:14px;">
+          <button type="button" class="tab-btn active" data-listening-type="youtube">🎥 YouTube Video</button>
+          <button type="button" class="tab-btn" data-listening-type="audio">🎤 Upload Audio</button>
+        </div>
+        <div id="listening-youtube-block" class="field" style="margin-bottom:14px; max-width:400px;">
+          <label>YouTube Video ID</label>
+          <input type="text" id="f-video-id" maxlength="11" placeholder="dQw4w9WgXcQ">
+          <div class="video-preview-wrap" id="video-preview-wrap"><div class="video-preview-empty">Enter a valid video ID to preview</div></div>
+        </div>
+        <div id="listening-audio-block" class="field" style="margin-bottom:14px; max-width:400px; display:none;">
+          <label>Audio File</label>
+          <input type="file" id="f-audio-file" accept="audio/*">
+          <audio id="audio-preview" controls style="width:100%; margin-top:10px; display:none;"></audio>
+          <p id="audio-status" style="font-size:12px; color:#8892a8; margin:8px 0 0;"></p>
+        </div>
+        <div class="field" style="margin-bottom:14px; max-width:220px;">
+          <label>Time Limit <span style="color:#8892a8; font-weight:400;">(minutes, optional)</span></label>
+          <input type="number" id="f-listening-timer" min="1" placeholder="No limit">
+        </div>
+        <button type="button" class="btn btn-secondary" style="padding:8px 14px; font-size:13px; margin-bottom:14px;" id="btn-save-video">Save Listening Source</button>
+        <div id="listening-questions-list"></div>
+        <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:13px;" id="btn-add-listening-q">+ Add Listening Question</button>
+      </div>
+
+      <!-- Vocabulary picture items -->
+      <div class="section-block card" style="max-width:820px;">
+        <h2>🖼️ Vocabulary (Picture)</h2>
+        <p class="hint">Student sees the image and picks the matching word. Up to 10 images per test. <span id="vocab-count"></span></p>
+        <div class="field" style="margin-bottom:14px; max-width:220px;">
+          <label>Time Limit <span style="color:#8892a8; font-weight:400;">(minutes, optional)</span></label>
+          <input type="number" id="f-vocab-timer" min="1" placeholder="No limit">
+        </div>
+        <button type="button" class="btn btn-secondary" style="padding:8px 14px; font-size:13px; margin-bottom:14px;" id="btn-save-vocab-timer">Save Time Limit</button>
+        <div id="vocab-items-list"></div>
+        <div style="margin-top:10px;">
+          <input type="file" id="f-vocab-image" accept="image/png,image/jpeg,image/webp" style="margin-bottom:8px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <input type="text" id="f-vocab-word" placeholder="Correct word for this image" style="flex:1; min-width:160px; padding:9px 12px; border-radius:8px; border:2px solid #e5e8f5; font-size:13px;">
+            <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:13px;" id="btn-add-vocab-item">+ Add Image</button>
+          </div>
+          <p id="vocab-status" style="font-size:12px; color:#8892a8; margin:8px 0 0;"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+<script src="../js/admin/test-editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Badges — Admin</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+</head>
+<body class="admin">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="brand">📚 English Together</div>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="students.html">👨‍🎓 Students</a>
+    <a href="groups.html">👥 Groups</a>
+    <a href="stories.html">📚 Stories</a>
+    <a href="listening.html">🎧 Listening</a>
+    <a href="vocabulary.html">📖 Vocabulary</a>
+    <a href="tests.html">📝 Tests</a>
+    <a href="test-history.html">🗂️ Test History</a>
+    <a href="import.html">📥 Import</a>
+    <a href="assignments.html">🎯 Assignments</a>
+    <a href="challenges.html">🎯 Challenges</a>
+    <a href="badges.html" class="active">🏆 Badges</a>
+    <a href="leaderboard.html">🥇 Leaderboard</a>
+    <a href="notifications.html">🔔 Notifications</a>
+    <a href="analytics.html">📈 Analytics</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="#" class="logout-link" id="logout-link">🚪 Log Out</a>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="hamburger" id="hamburger">☰</button>
+        <h1>Badges</h1>
+      </div>
+      <button class="btn btn-primary" id="btn-add-badge">+ Add Badge</button>
+    </div>
+
+    <div id="badges-area" class="overview-grid">
+      <div class="loading-state"><div class="spinner"></div></div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="badge-modal" style="display:none;">
+    <div class="modal-box">
+      <h2 id="modal-title">+ Add Badge</h2>
+      <form id="badge-form">
+        <input type="hidden" id="f-id">
+        <div class="admin-field" style="margin-bottom:12px;"><label>Name</label><input type="text" id="f-name" required></div>
+        <div class="admin-field" style="margin-bottom:12px;"><label>Description</label><input type="text" id="f-desc"></div>
+        <div class="admin-field" style="margin-bottom:12px;"><label>Icon (emoji)</label><input type="text" id="f-icon" maxlength="4" placeholder="🏆"></div>
+        <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+          <div class="admin-field" style="flex:1;">
+            <label>Requirement</label>
+            <select id="f-req-type">
+              <option value="stories_completed">Stories Completed</option>
+              <option value="listening_completed">Listening Activities Completed</option>
+              <option value="perfect_score">Perfect Score</option>
+              <option value="streak">Reading Streak (days)</option>
+              <option value="avg_score">Average Score (%)</option>
+              <option value="vocabulary_known">Vocabulary Words Known</option>
+              <option value="vocabulary_reviews">Vocabulary Reviews Completed</option>
+              <option value="vocabulary_accuracy">Vocabulary Accuracy (%)</option>
+            </select>
+          </div>
+          <div class="admin-field" style="flex:1;"><label>Value</label><input type="number" id="f-req-value" min="1" value="1" required></div>
+        </div>
+        <label style="font-size:13px;"><input type="checkbox" id="f-active" checked style="width:auto; margin-right:6px;"> Active</label>
+        <p id="badge-status" style="font-size:12px; color:#8892a8; min-height:16px; margin-top:8px;"></p>
+        <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary">Save Badge</button>
+          <button type="button" class="btn btn-secondary" id="btn-cancel-badge">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="../js/admin/badges.js"></script>
+</body>
+</html>

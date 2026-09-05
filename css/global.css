@@ -1,0 +1,99 @@
+:root {
+  /* Student palette */
+  --s-primary: #6C63E8;
+  --s-secondary: #55B7E8;
+  --s-accent: #FFD85A;
+  --s-success: #43C98B;
+  --s-error: #E96A76;
+  --s-bg: #F7F9FF;
+  --s-text: #26334D;
+  --s-card: #FFFFFF;
+
+  /* Admin palette */
+  --a-primary: #5B54D6;
+  --a-dark: #20263A;
+  --a-bg: #F5F6FA;
+  --a-card: #FFFFFF;
+  --a-success: #35A875;
+  --a-warning: #E6A72E;
+  --a-danger: #D95363;
+
+  --radius: 16px;
+  --shadow: 0 4px 16px rgba(38, 51, 77, 0.08);
+  --shadow-lg: 0 8px 28px rgba(38, 51, 77, 0.14);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", -apple-system, system-ui, sans-serif;
+  background: var(--s-bg);
+  color: var(--s-text);
+  line-height: 1.5;
+}
+body.admin { background: var(--a-bg); }
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+img { max-width: 100%; display: block; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; border-radius: 12px; padding: 12px 22px;
+  font-weight: 600; font-size: 15px; transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--s-primary); color: #fff; box-shadow: var(--shadow); }
+.btn-primary:hover { box-shadow: var(--shadow-lg); }
+.btn-secondary { background: #fff; color: var(--s-primary); border: 2px solid var(--s-primary); }
+.btn-large { padding: 16px 32px; font-size: 17px; border-radius: 16px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.card {
+  background: var(--s-card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.loading-state, .empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 48px 20px; text-align: center; color: #6b7690;
+}
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.spinner {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 4px solid #e2e6f5; border-top-color: var(--s-primary);
+  animation: spin 0.8s linear infinite; margin-bottom: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast-container { position: fixed; top: 16px; right: 16px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  background: var(--a-dark); color: #fff; padding: 12px 18px; border-radius: 10px;
+  box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(-8px); transition: all .3s ease;
+  font-size: 14px; max-width: 320px;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast-success { background: var(--s-success); }
+.toast-error { background: var(--s-error); }
+
+.skeleton {
+  background: linear-gradient(90deg, #eef0fa 25%, #f7f8fd 37%, #eef0fa 63%);
+  background-size: 400% 100%; animation: shimmer 1.4s ease infinite; border-radius: 10px;
+}
+@keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+.badge-pill {
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+  border-radius: 999px; font-size: 12px; font-weight: 700;
+}
+.pill-success { background: #E4F9F0; color: var(--s-success); }
+.pill-danger { background: #FDECEE; color: var(--s-error); }
+.pill-warning { background: #FFF6E0; color: #B78200; }
+
+/* ---- Responsive pass: small phones, applies everywhere ---- */
+@media (max-width: 480px) {
+  .toast-container { top: 10px; right: 10px; left: 10px; }
+  .toast { max-width: none; }
+  .card { padding: 16px; border-radius: 12px; }
+  .btn-large { padding: 14px 22px; font-size: 15px; }
+}

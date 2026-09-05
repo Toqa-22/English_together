@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Groups — Admin</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/animations.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+</head>
+<body class="admin">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="brand">📚 English Together</div>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="students.html">👨‍🎓 Students</a>
+    <a href="groups.html" class="active">👥 Groups</a>
+    <a href="stories.html">📚 Stories</a>
+    <a href="listening.html">🎧 Listening</a>
+    <a href="vocabulary.html">📖 Vocabulary</a>
+    <a href="tests.html">📝 Tests</a>
+    <a href="test-history.html">🗂️ Test History</a>
+    <a href="import.html">📥 Import</a>
+    <a href="assignments.html">🎯 Assignments</a>
+    <a href="challenges.html">🎯 Challenges</a>
+    <a href="badges.html">🏆 Badges</a>
+    <a href="leaderboard.html">🥇 Leaderboard</a>
+    <a href="notifications.html">🔔 Notifications</a>
+    <a href="analytics.html">📈 Analytics</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="#" class="logout-link" id="logout-link">🚪 Log Out</a>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="hamburger" id="hamburger">☰</button>
+        <h1>Groups</h1>
+      </div>
+      <button class="btn btn-primary" id="btn-add-group">+ Add Group</button>
+    </div>
+
+    <div id="groups-area" class="overview-grid">
+      <div class="loading-state"><div class="spinner"></div></div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="group-modal" style="display:none;">
+    <div class="modal-box">
+      <h2 id="modal-title">+ Add Group</h2>
+      <form id="group-form">
+        <input type="hidden" id="f-group-id">
+        <div class="admin-field" style="margin-bottom:12px;"><label>Name</label><input type="text" id="f-name" required></div>
+        <div class="admin-field" style="margin-bottom:12px;"><label>Description</label><input type="text" id="f-desc"></div>
+        <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+          <div class="admin-field" style="flex:1;"><label>Age Min <span style="color:#b9c0d6; font-weight:400;">(optional)</span></label><input type="number" id="f-age-min" min="1"></div>
+          <div class="admin-field" style="flex:1;"><label>Age Max <span style="color:#b9c0d6; font-weight:400;">(optional)</span></label><input type="number" id="f-age-max" min="1"></div>
+        </div>
+        <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+          <div class="admin-field" style="flex:1;"><label>Color</label><input type="color" id="f-color" value="#6C63E8"></div>
+          <div class="admin-field" style="flex:1;"><label>Icon (emoji)</label><input type="text" id="f-icon" maxlength="4" placeholder="👥"></div>
+        </div>
+        <div class="admin-field" style="margin-bottom:8px;">
+          <label>Meeting Link <span style="color:#b9c0d6; font-weight:400;">(optional)</span></label>
+          <input type="url" id="f-meeting-link" placeholder="https://zoom.us/j/...">
+        </div>
+        <label style="font-size:13px; display:block; margin-bottom:12px;">
+          <input type="checkbox" id="f-meeting-visible" style="width:auto; margin-right:6px;"> Show this link to students in the group
+        </label>
+        <div class="admin-field" style="margin-bottom:12px;">
+          <label>Weekly Vocabulary Goal <span style="color:#b9c0d6; font-weight:400;">(words per week)</span></label>
+          <input type="number" id="f-vocab-goal" min="1" value="10">
+        </div>
+        <label style="font-size:13px;"><input type="checkbox" id="f-active" checked style="width:auto; margin-right:6px;"> Active</label>
+        <p id="group-status" style="font-size:12px; color:#8892a8; min-height:16px; margin-top:8px;"></p>
+        <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary">Save Group</button>
+          <button type="button" class="btn btn-secondary" id="btn-cancel-group">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="../js/admin/groups.js"></script>
+</body>
+</html>
